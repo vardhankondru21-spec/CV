@@ -1,0 +1,31 @@
+import cv2
+import numpy as np
+from google.colab.patches import cv2_imshow
+
+r_min = 100
+r_max = 200
+
+img_path = "/content/dog.jpg"
+img_color = cv2.imread(img_path)
+
+if img_color is None:
+    print(f"Error: Image at {img_path} not loaded. Please check the path and file.")
+    img_color = np.zeros((200, 300, 3), dtype=np.uint8)
+
+img_gray = cv2.cvtColor(img_color, cv2.COLOR_BGR2GRAY)
+mask = (img_gray >= r_min) & (img_gray <= r_max)
+
+slicing_with_bg = img_color.copy()
+slicing_with_bg[~mask] = [0, 0, 0]
+
+slicing_without_bg = np.zeros_like(img_color)
+slicing_without_bg[mask] = [255, 255, 255]
+
+print("Original Image:")
+cv2_imshow(img_color)
+
+print("Slicing with Background:")
+cv2_imshow(slicing_with_bg)
+
+print("Slicing without Background (Selected Range Only):")
+cv2_imshow(slicing_without_bg)
